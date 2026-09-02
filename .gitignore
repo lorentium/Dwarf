@@ -1,4 +1,8 @@
 .venv/
 .env
+.dwarf_progress.json
 __pycache__/
+.pytest_cache/
 *.pyc
+repositorios_ghaw.csv
+repos_prueba.csv
