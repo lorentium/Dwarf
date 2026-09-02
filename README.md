@@ -74,7 +74,7 @@ Dwarf/
 ├── dwarf/
 │   ├── __init__.py
 │   ├── cli.py          # Interfaz de línea de comandos (Typer)
-│   ├── models.py       # Validaciones de modelos de datos (Pydantic)
+│   ├── requirements.py       # Validaciones de modelos de datos (Pydantic)
 │   ├── github.py       # Cliente de conexión a la API de GitHub (HTTPX)
 │   ├── parser.py       # Lógica pura de detección de GH-AW
 │   └── processor.py    # Orquestación de lectura/escritura CSV y control de checkpoints
