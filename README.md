@@ -1,5 +1,5 @@
 # Dwarf
-Data Web Archive Repository Filter
+Detection & Workflow Agentic Repository Finder
 
 **Dwarf** es una herramienta de línea de comandos (CLI) desarrollada en Python para automatizar la identificación de repositorios de GitHub que implementan **GitHub Agentic Workflows (GH-AW)**.
 
