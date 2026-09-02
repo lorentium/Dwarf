@@ -1,11 +1,19 @@
 import os
 import json
 import pandas as pd
+import math
 from dwarf.repository import Repository
 from dwarf.github import get_workflow_filenames
 from dwarf.parser import has_github_agentic_workflows
 
 CHECKPOINT_FILE = ".dwarf_progress.json"
+
+def sanitize_row(row_dict: dict) -> dict:
+    """Reemplaza valores NaN de Pandas por None (se escribirán como null en JSON)."""
+    return {
+        key: (None if isinstance(value, float) and math.isnan(value) else value)
+        for key, value in row_dict.items()
+    }
 
 def _load_progress() -> tuple[set, list]:
     """Carga el progreso previo si el archivo de punto de control existe."""
@@ -27,16 +35,18 @@ def _cleanup_progress():
     """Borra el punto de control cuando el proceso termina al 100%."""
     if os.path.exists(CHECKPOINT_FILE):
         os.remove(CHECKPOINT_FILE)
+        
+        
 
 def process_csv(input_path: str, output_path: str) -> tuple[int, bool]:
     """
     Procesa el CSV permitiendo interrupción manual (Ctrl+C) y reanudación.
     Retorna (cantidad_de_coincidencias, fue_interrumpido).
     """
-    df = pd.read_csv(input_path)
+    df = pd.read_csv(input_path, low_memory=False)
     processed_repos, valid_rows = _load_progress()
     interrupted = False
-
+    
     try:
         for index, row in df.iterrows():
             raw_name = str(row.get("name", "")).strip()
@@ -51,7 +61,8 @@ def process_csv(input_path: str, output_path: str) -> tuple[int, bool]:
                 print(f"Archivos en {repo.name}: {filenames}")
 
                 if has_github_agentic_workflows(filenames):
-                    valid_rows.append(row.to_dict())
+                    clean_dict = sanitize_row(row.to_dict())
+                    valid_rows.append(clean_dict)
             except Exception:
                 pass
             finally:
